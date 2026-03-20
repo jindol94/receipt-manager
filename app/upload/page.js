@@ -97,8 +97,6 @@ function UploadPageContent() {
           image_width: imageSize.width,
           image_height: imageSize.height,
           highlights: ocrResult?.highlights || {},
-          raw_text: ocrResult?.rawText || '',
-          confidence: ocrResult?.confidence || 0,
           team,
         };
 
