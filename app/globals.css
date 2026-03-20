@@ -762,6 +762,10 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 30;
   transition: transform var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+  line-height: 1;
 }
 
 .fab:active {
@@ -779,12 +783,18 @@ h1, h2, h3, h4, h5, h6 {
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 402px;
   z-index: 50;
   background: var(--color-white);
   border-top: 1px solid var(--color-border);
   padding-bottom: var(--safe-area-bottom);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: var(--bottom-nav-height);
 }
 
 .bottom-nav-inner {
@@ -1984,4 +1994,398 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-card-bg);
   border-radius: var(--radius-full);
   color: var(--color-text-secondary);
+}
+
+
+/* --- App Container --- */
+.app-container {
+  width: 100%;
+  max-width: 402px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+}
+
+
+/* --- Legacy nav-item support (for bottom-nav) --- */
+.bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  transition: color var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  flex: 1;
+}
+
+.bottom-nav .nav-item.active {
+  color: var(--color-primary);
+}
+
+.bottom-nav .nav-item:active {
+  opacity: 0.7;
+}
+
+.nav-icon {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: var(--text-xs);
+  line-height: 1;
+}
+
+/* --- Page Content --- */
+.page-content {
+  flex: 1;
+  padding: var(--space-4);
+}
+
+
+/* --- Card List --- */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+
+/* --- Filter Bar / Chips --- */
+.filter-bar {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-chip {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-white);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+  background: var(--color-card-bg);
+}
+
+.filter-active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+
+/* --- Summary Bar --- */
+.summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.summary-amount {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* --- Total Card --- */
+.total-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+  background: var(--color-card-bg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.total-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.total-amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* --- Empty Message --- */
+.empty-message {
+  text-align: center;
+  padding: var(--space-10) var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+
+/* --- Btn Full Width --- */
+.btn-full {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+
+/* --- Back Button --- */
+.btn-back {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-2) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: var(--weight-medium);
+}
+
+
+/* --- Step Indicator --- */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background var(--transition-fast);
+}
+
+.step-dot.step-active {
+  background: var(--color-primary);
+}
+
+
+/* --- Step Title --- */
+.step-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-4);
+}
+
+
+/* --- Upload Step --- */
+.upload-step {
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-step.processing {
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  gap: var(--space-4);
+}
+
+.progress-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+
+/* --- Progress Bar --- */
+.progress-section {
+  margin-top: var(--space-4);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+
+/* --- PDF Done --- */
+.pdf-done {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.success-message {
+  text-align: center;
+  color: var(--color-success);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-base);
+}
+
+
+/* --- Budget Item (budget page) --- */
+.budget-item {
+  padding: var(--space-4);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.budget-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.budget-input-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.budget-input-row .input,
+.budget-input {
+  flex: 1;
+  width: 100%;
+  padding: var(--space-3) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.budget-input-row .input:focus,
+.budget-input:focus {
+  border-color: var(--color-primary);
+}
+
+.budget-current {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+
+/* --- Receipt Detail Modal --- */
+.receipt-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.receipt-detail-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: var(--color-card-bg);
+}
+
+.receipt-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.receipt-detail-info p {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.receipt-raw-text {
+  margin-top: var(--space-2);
+}
+
+.receipt-raw-text pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  padding: var(--space-3);
+  background: var(--color-card-bg);
+  border-radius: var(--radius-md);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  padding: var(--space-2);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+}
+
+.btn-close:hover {
+  background: var(--color-card-bg);
+}
+
+
+/* --- Trip Card Actions --- */
+.trip-card-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.trip-card-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+
+/* --- Sub Category Trips --- */
+.sub-category-trips {
+  width: 100%;
+  margin-top: var(--space-3);
+}
+
+.sub-category-trips-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+
+/* --- Tab Navigation spacing fix --- */
+.tab-navigation {
+  margin: 0 var(--space-4);
+  margin-bottom: var(--space-2);
 }

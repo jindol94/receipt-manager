@@ -46,8 +46,13 @@ export default function LoginPage() {
       const { error: signInError } = await signIn(email, password);
       if (signInError) {
         setError(signInError.message);
+        setLoading(false);
+        return;
       }
-      // On success, AuthProvider will redirect to /
+      // Explicitly redirect after successful login
+      router.push('/');
+      router.refresh();
+      return;
     }
 
     setLoading(false);

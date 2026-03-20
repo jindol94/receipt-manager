@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 
-export default function TripForm({ trip, onSave, onClose }) {
+export default function TripForm({ trip, onSave, onClose, onCancel }) {
+  const handleClose = onCancel || onClose;
   const [name, setName] = useState(trip?.name || '');
   const [startDate, setStartDate] = useState(trip?.start_date || '');
   const [endDate, setEndDate] = useState(trip?.end_date || '');
@@ -13,7 +14,7 @@ export default function TripForm({ trip, onSave, onClose }) {
   }
 
   return (
-    <div className="trip-form-overlay" onClick={onClose}>
+    <div className="trip-form-overlay" onClick={handleClose}>
       <form
         className="trip-form"
         onClick={(e) => e.stopPropagation()}
@@ -50,7 +51,7 @@ export default function TripForm({ trip, onSave, onClose }) {
           />
         </div>
         <div className="trip-form-actions">
-          <button type="button" className="trip-form-btn close" onClick={onClose}>
+          <button type="button" className="trip-form-btn close" onClick={handleClose}>
             취소
           </button>
           <button type="submit" className="trip-form-btn save">

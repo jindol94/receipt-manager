@@ -2,32 +2,37 @@
 
 import { useState, useEffect } from 'react';
 
-export default function OcrResultEditor({ image, ocrResult, onConfirm, onCancel }) {
-  const [loading, setLoading] = useState(!ocrResult);
+export default function OcrResultEditor({ image, imageBlob, result, ocrResult, onConfirm, onSave, onCancel, saving }) {
+  const resolvedOcr = result || ocrResult;
+  const resolvedImage = imageBlob || image;
+  const resolvedOnConfirm = onSave || onConfirm;
+
+  const [loading, setLoading] = useState(!resolvedOcr);
   const [storeName, setStoreName] = useState('');
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
   const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
-    if (image) {
-      const url = URL.createObjectURL(image);
+    if (resolvedImage) {
+      const url = URL.createObjectURL(resolvedImage);
       setPreviewUrl(url);
       return () => URL.revokeObjectURL(url);
     }
-  }, [image]);
+  }, [resolvedImage]);
 
   useEffect(() => {
-    if (ocrResult) {
-      setStoreName(ocrResult.storeName || '');
-      setDate(ocrResult.date || '');
-      setAmount(ocrResult.amount || '');
+    if (resolvedOcr) {
+      setStoreName(resolvedOcr.storeName || '');
+      setDate(resolvedOcr.date || '');
+      setAmount(resolvedOcr.amount ? String(resolvedOcr.amount) : '');
       setLoading(false);
     }
-  }, [ocrResult]);
+  }, [resolvedOcr]);
 
   function handleConfirm() {
-    onConfirm({ storeName, date, amount });
+    const parsedAmount = parseInt(String(amount).replace(/,/g, ''), 10) || 0;
+    resolvedOnConfirm({ storeName, date, amount: parsedAmount });
   }
 
   if (loading) {
@@ -77,11 +82,13 @@ export default function OcrResultEditor({ image, ocrResult, onConfirm, onCancel 
         </div>
       </div>
       <div className="ocr-editor-actions">
-        <button className="ocr-editor-btn cancel" onClick={onCancel}>
-          취소
-        </button>
-        <button className="ocr-editor-btn confirm" onClick={handleConfirm}>
-          확인
+        {onCancel && (
+          <button className="ocr-editor-btn cancel" onClick={onCancel}>
+            취소
+          </button>
+        )}
+        <button className="ocr-editor-btn confirm" onClick={handleConfirm} disabled={saving}>
+          {saving ? '저장 중...' : '확인'}
         </button>
       </div>
     </div>

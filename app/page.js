@@ -179,18 +179,14 @@ export default function HomePage() {
               )}
             </div>
             {showTripForm && (
-              <div className="modal-overlay">
-                <div className="modal">
-                  <TripForm
-                    trip={editingTrip}
-                    onSave={handleSaveTrip}
-                    onCancel={() => {
-                      setShowTripForm(false);
-                      setEditingTrip(null);
-                    }}
-                  />
-                </div>
-              </div>
+              <TripForm
+                trip={editingTrip}
+                onSave={handleSaveTrip}
+                onCancel={() => {
+                  setShowTripForm(false);
+                  setEditingTrip(null);
+                }}
+              />
             )}
           </div>
         )}

@@ -45,8 +45,10 @@ export default function AuthProvider({ children }) {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
         await fetchProfile();
+        setLoading(false);
         if (pathname === '/login') {
           router.push('/');
+          router.refresh();
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);

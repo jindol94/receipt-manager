@@ -1,7 +1,8 @@
 'use client';
 
 export default function ReceiptCard({ receipt, onClick, onDelete }) {
-  const { image_url, store_name, date, amount } = receipt;
+  const { image_url, store_name, receipt_date, date, amount } = receipt;
+  const displayDate = receipt_date || date || '';
 
   function handleDelete(e) {
     e.stopPropagation();
@@ -17,7 +18,7 @@ export default function ReceiptCard({ receipt, onClick, onDelete }) {
       )}
       <div className="receipt-card-info">
         <div className="receipt-card-store">{store_name || '알 수 없음'}</div>
-        <div className="receipt-card-date">{date}</div>
+        <div className="receipt-card-date">{displayDate}</div>
       </div>
       <div className="receipt-card-amount">{Number(amount).toLocaleString()}원</div>
       <button className="receipt-card-delete" onClick={handleDelete}>

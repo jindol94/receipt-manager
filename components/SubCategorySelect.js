@@ -6,8 +6,9 @@ const OPTIONS_MAP = {
   '출장비': ['교통비', '식비', '숙박비', '기타'],
 };
 
-export default function SubCategorySelect({ category, value, onChange }) {
+export default function SubCategorySelect({ category, value, onChange, onSelect, trips }) {
   const options = OPTIONS_MAP[category] || [];
+  const handleClick = onSelect || onChange;
 
   return (
     <div className="sub-category-select">
@@ -15,11 +16,25 @@ export default function SubCategorySelect({ category, value, onChange }) {
         <button
           key={opt}
           className={`sub-category-button ${value === opt ? 'selected' : ''}`}
-          onClick={() => onChange(opt)}
+          onClick={() => handleClick(opt)}
         >
           {opt}
         </button>
       ))}
+      {trips && trips.length > 0 && (
+        <div className="sub-category-trips">
+          <p className="sub-category-trips-label">출장 선택:</p>
+          {trips.map((trip) => (
+            <button
+              key={trip.id}
+              className="sub-category-button"
+              onClick={() => handleClick('출장비', trip.id)}
+            >
+              {trip.name}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
