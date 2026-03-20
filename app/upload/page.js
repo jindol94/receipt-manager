@@ -62,9 +62,14 @@ function UploadPageContent() {
     setProcessedBlob(bgResult.blob);
     setImageSize({ width: bgResult.width, height: bgResult.height });
 
-    setProgressText('OCR 스캔 중...');
-    const ocrData = await scanReceipt(bgResult.blob);
-    setOcrResult(ocrData);
+    setProgressText('OCR 스캔 중... (최초 로딩 시 시간이 걸릴 수 있습니다)');
+    try {
+      const ocrData = await scanReceipt(bgResult.blob);
+      setOcrResult(ocrData);
+    } catch (e) {
+      console.error('OCR 실패:', e);
+      setOcrResult({ amount: 0, storeName: '', date: '', highlights: {} });
+    }
 
     setProgressText('');
     setStep(4);
@@ -162,7 +167,7 @@ function UploadPageContent() {
           </div>
         )}
 
-        {step === 4 && ocrResult && (
+        {step === 4 && (
           <div className="upload-step">
             <h2 className="step-title">인식 결과 확인</h2>
             <OcrResultEditor
