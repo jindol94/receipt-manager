@@ -114,9 +114,9 @@ function parseStoreName(text) {
     const shouldSkip = skipPatterns.some(p => p.test(line));
     if (shouldSkip) continue;
 
-    // 한글이 2글자 이상 포함된 줄
-    const koreanChars = (line.match(/[가-힣]/g) || []).length;
-    if (koreanChars >= 2) {
+    // 한글 또는 영문이 2글자 이상 포함된 줄
+    const meaningfulChars = (line.match(/[가-힣a-zA-Z]/g) || []).length;
+    if (meaningfulChars >= 2) {
       return line.replace(/[\[\](){}【】"']/g, '').trim();
     }
   }
