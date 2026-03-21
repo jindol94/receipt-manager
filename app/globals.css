@@ -2389,3 +2389,54 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 var(--space-4);
   margin-bottom: var(--space-2);
 }
+
+/* ── Image Cropper ── */
+.image-cropper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cropper-hint {
+  font-size: 14px;
+  color: var(--color-text-secondary, #71717A);
+  text-align: center;
+  margin: 0;
+}
+
+.cropper-container {
+  display: flex;
+  justify-content: center;
+  background: #F4F4F5;
+  border-radius: 12px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.cropper-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cropper-actions .btn-secondary {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid #E4E4E7;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cropper-actions .btn-primary {
+  flex: 2;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #000;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}

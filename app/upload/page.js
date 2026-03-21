@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SubCategorySelect from '@/components/SubCategorySelect';
 import CameraCapture from '@/components/CameraCapture';
+import ImageCropper from '@/components/ImageCropper';
 import OcrResultEditor from '@/components/OcrResultEditor';
 import { removeBackground } from '@/lib/image-processor';
 import { scanReceipt } from '@/lib/ocr';
@@ -27,6 +28,7 @@ function UploadPageContent() {
   const tab = searchParams.get('tab') || '법인카드';
   const month = searchParams.get('month') || new Date().toISOString().slice(0, 7);
 
+  // Steps: 1=카테고리, 2=촬영, 3=크롭, 4=OCR처리중, 5=결과확인
   const [step, setStep] = useState(1);
   const [subCategory, setSubCategory] = useState('');
   const [tripId, setTripId] = useState('');
@@ -52,17 +54,25 @@ function UploadPageContent() {
     setStep(2);
   }, []);
 
-  const handleCapture = useCallback(async (file) => {
+  // 촬영 완료 → 크롭 단계로
+  const handleCapture = useCallback((file) => {
     setImageFile(file);
     setStep(3);
+  }, []);
 
-    // Step 3: processing
-    setProgressText('배경 제거 중...');
-    const bgResult = await removeBackground(file);
+  // 크롭 완료 → OCR 처리
+  const handleCropDone = useCallback(async (blob, width, height) => {
+    setStep(4);
+
+    setProgressText('이미지 처리 중...');
+    const bgResult = await removeBackground(blob);
     setProcessedBlob(bgResult.blob);
-    setImageSize({ width: bgResult.width, height: bgResult.height });
+    setImageSize({
+      width: width || bgResult.width,
+      height: height || bgResult.height,
+    });
 
-    setProgressText('OCR 스캔 중... (최초 로딩 시 시간이 걸릴 수 있습니다)');
+    setProgressText('영수증 스캔 중...');
     try {
       const ocrData = await scanReceipt(bgResult.blob);
       setOcrResult(ocrData);
@@ -72,14 +82,18 @@ function UploadPageContent() {
     }
 
     setProgressText('');
-    setStep(4);
+    setStep(5);
   }, []);
+
+  // 크롭 스킵 → 원본으로 OCR 처리
+  const handleCropSkip = useCallback(async (file) => {
+    await handleCropDone(file);
+  }, [handleCropDone]);
 
   const handleSave = useCallback(
     async (editedData) => {
       setSaving(true);
       try {
-        // Upload image
         const { url, error: uploadError } = await uploadReceiptImage(
           processedBlob,
           month
@@ -90,7 +104,6 @@ function UploadPageContent() {
           return;
         }
 
-        // Create receipt record
         const receipt = {
           month,
           category: tab,
@@ -133,7 +146,7 @@ function UploadPageContent() {
       </header>
 
       <div className="step-indicator">
-        {[1, 2, 3, 4].map((s) => (
+        {[1, 2, 3, 4, 5].map((s) => (
           <div
             key={s}
             className={`step-dot ${step >= s ? 'step-active' : ''}`}
@@ -161,13 +174,24 @@ function UploadPageContent() {
         )}
 
         {step === 3 && (
+          <div className="upload-step">
+            <h2 className="step-title">영수증 영역 선택</h2>
+            <ImageCropper
+              imageFile={imageFile}
+              onCropDone={handleCropDone}
+              onSkip={handleCropSkip}
+            />
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="upload-step processing">
             <div className="spinner" />
             <p className="progress-text">{progressText}</p>
           </div>
         )}
 
-        {step === 4 && (
+        {step === 5 && (
           <div className="upload-step">
             <h2 className="step-title">인식 결과 확인</h2>
             <OcrResultEditor
