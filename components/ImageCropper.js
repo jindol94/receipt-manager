@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -10,8 +10,7 @@ export default function ImageCropper({ imageFile, onCropDone, onSkip }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const imgRef = useRef(null);
 
-  // 이미지 로드
-  useState(() => {
+  useEffect(() => {
     if (imageFile) {
       const url = URL.createObjectURL(imageFile);
       setPreviewUrl(url);
@@ -21,27 +20,37 @@ export default function ImageCropper({ imageFile, onCropDone, onSkip }) {
 
   const onImageLoad = useCallback((e) => {
     imgRef.current = e.currentTarget;
-    // 기본 크롭 영역 설정 (가운데 90%)
-    setCrop({ unit: '%', x: 5, y: 5, width: 90, height: 90 });
   }, []);
 
   const handleCrop = useCallback(async () => {
     const image = imgRef.current;
-    if (!image || !completedCrop) {
-      // 크롭 안 했으면 원본 그대로
+    if (!image) {
+      onCropDone(imageFile);
+      return;
+    }
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    // completedCrop이 없으면 기본 크롭 (90%) 사용
+    const c = completedCrop || {
+      x: image.width * 0.05,
+      y: image.height * 0.05,
+      width: image.width * 0.9,
+      height: image.height * 0.9,
+    };
+
+    const cropX = c.x * scaleX;
+    const cropY = c.y * scaleY;
+    const cropW = c.width * scaleX;
+    const cropH = c.height * scaleY;
+
+    if (cropW <= 0 || cropH <= 0) {
       onCropDone(imageFile);
       return;
     }
 
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-
-    const cropX = completedCrop.x * scaleX;
-    const cropY = completedCrop.y * scaleY;
-    const cropW = completedCrop.width * scaleX;
-    const cropH = completedCrop.height * scaleY;
-
     canvas.width = cropW;
     canvas.height = cropH;
 
@@ -50,14 +59,22 @@ export default function ImageCropper({ imageFile, onCropDone, onSkip }) {
     ctx.fillRect(0, 0, cropW, cropH);
     ctx.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    const blob = await new Promise((resolve) =>
-      canvas.toBlob(resolve, 'image/jpeg', 0.85)
-    );
-
-    onCropDone(blob, cropW, cropH);
+    try {
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (b) => (b ? resolve(b) : reject(new Error('크롭 실패'))),
+          'image/jpeg',
+          0.85
+        );
+      });
+      onCropDone(blob, Math.round(cropW), Math.round(cropH));
+    } catch (e) {
+      console.error('크롭 에러:', e);
+      onCropDone(imageFile);
+    }
   }, [completedCrop, imageFile, onCropDone]);
 
-  if (!previewUrl) return null;
+  if (!previewUrl) return <p>이미지 로딩 중...</p>;
 
   return (
     <div className="image-cropper">
@@ -78,7 +95,7 @@ export default function ImageCropper({ imageFile, onCropDone, onSkip }) {
       </div>
       <div className="cropper-actions">
         <button className="btn-secondary" onClick={() => onSkip(imageFile)}>
-          크롭 없이 사용
+          원본 사용
         </button>
         <button className="btn-primary" onClick={handleCrop}>
           크롭 완료
